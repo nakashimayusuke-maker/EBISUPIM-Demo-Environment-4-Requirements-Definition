@@ -969,9 +969,7 @@ function getIndexHTML() {
         <button @click="saleTab='upload'" :class="saleTab==='upload'?'bg-slate-800 text-white':'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm">
           <i class="fas fa-file-upload text-xs"></i> CSV一括登録
         </button>
-        <button @click="saleTab='new'" :class="saleTab==='new'?'bg-slate-800 text-white':'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'" class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm">
-          <i class="fas fa-plus text-xs"></i> 新規登録
-        </button>
+
       </div>
     </div>
 
@@ -1010,10 +1008,7 @@ function getIndexHTML() {
           <option>チャネル：すべて</option>
           <option>楽天市場</option><option>Amazon</option><option>ZOZOTOWN</option><option>マルイウェブ</option><option>Shopify</option>
         </select>
-        <select class="border border-gray-200 rounded-lg text-sm px-3 py-1.5 focus:outline-none bg-white">
-          <option>ステータス：すべて</option>
-          <option>開催中</option><option>予定</option><option>終了</option>
-        </select>
+
         <button @click="saleSearch=''" class="text-xs text-gray-400 hover:text-gray-600 px-2">クリア</button>
       </div>
 
@@ -1025,10 +1020,9 @@ function getIndexHTML() {
               <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">管理番号</th>
               <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">セール名</th>
               <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">セール期間</th>
-              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">対象チャネル</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">コネクタ</th>
               <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">対象商品数</th>
               <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">登録日</th>
-              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">ステータス</th>
               <th class="px-4 py-3"></th>
             </tr>
           </thead>
@@ -1055,11 +1049,6 @@ function getIndexHTML() {
                   <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded" x-text="s.itemCount + '件'"></span>
                 </td>
                 <td class="px-4 py-3 text-xs text-gray-500" x-text="s.createdAt"></td>
-                <td class="px-4 py-3">
-                  <span class="text-xs px-2 py-0.5 rounded-full font-medium"
-                    :class="s.status==='開催中'?'bg-green-50 text-green-600':s.status==='予定'?'bg-blue-50 text-blue-600':'bg-gray-100 text-gray-400'"
-                    x-text="s.status"></span>
-                </td>
                 <td class="px-4 py-3">
                   <button class="text-gray-300 hover:text-gray-500 text-xs"><i class="fas fa-chevron-right"></i></button>
                 </td>
@@ -1154,7 +1143,7 @@ function getIndexHTML() {
               <tbody class="divide-y divide-gray-100">
                 <tr class="bg-white"><td class="px-3 py-2 font-mono text-gray-700">管理番号</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">SKU管理番号</td></tr>
                 <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-gray-700">商品コード</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">PIM商品コード</td></tr>
-                <tr class="bg-white"><td class="px-3 py-2 font-mono text-gray-700">対象チャネル</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">楽天/Amazon/ZOZO等</td></tr>
+                <tr class="bg-white"><td class="px-3 py-2 font-mono text-gray-700">コネクタ</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">楽天/Amazon/ZOZO等</td></tr>
                 <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-gray-700">価格項目名</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">通常価格/セール価格</td></tr>
                 <tr class="bg-white"><td class="px-3 py-2 font-mono text-gray-700">セール価格</td><td class="px-3 py-2 text-red-500">必須</td><td class="px-3 py-2 text-gray-600">税込価格（整数）</td></tr>
               </tbody>
@@ -1162,7 +1151,7 @@ function getIndexHTML() {
           </div>
           <div class="bg-gray-50 rounded-lg p-3 text-xs font-mono text-gray-600 mb-3">
             <div class="text-gray-400 mb-1"># サンプル</div>
-            <div>管理番号,商品コード,対象チャネル,価格項目名,セール価格</div>
+            <div>管理番号,商品コード,コネクタ,価格項目名,セール価格</div>
             <div>MGT-001,EST-RG001,楽天市場,セール価格,37800</div>
             <div>MGT-002,EST-RG001,Amazon,セール価格,37800</div>
             <div>MGT-003,EST-NK002,ZOZOTOWN,セール価格,23800</div>
@@ -1232,7 +1221,7 @@ function getIndexHTML() {
               </div>
             </div>
             <div>
-              <label class="block text-xs text-gray-500 mb-2">対象チャネル/ショップ <span class="text-red-400">*</span></label>
+              <label class="block text-xs text-gray-500 mb-2">コネクタ/ショップ <span class="text-red-400">*</span></label>
               <div class="flex flex-wrap gap-2">
                 <label class="flex items-center gap-1.5 text-xs border border-gray-200 rounded px-2 py-1 cursor-pointer hover:bg-gray-50"><input type="checkbox" class="rounded" checked> 楽天市場</label>
                 <label class="flex items-center gap-1.5 text-xs border border-gray-200 rounded px-2 py-1 cursor-pointer hover:bg-gray-50"><input type="checkbox" class="rounded" checked> Amazon</label>
@@ -1533,7 +1522,7 @@ function pimApp() {
           <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">登録日</div><div class="text-gray-700 text-xs">\${s.createdAt}</div></div>
           <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">セール期間</div><div class="text-gray-700 text-xs">\${s.start} 〜 \${s.end}</div></div>
           <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">対象商品数</div><div class="font-bold text-gray-800">\${s.itemCount}件</div></div>
-          <div class="col-span-2 bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-2">対象チャネル/ショップ</div><div class="flex gap-1 flex-wrap">\${chBadges}</div></div>
+          <div class="col-span-2 bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-2">コネクタ/ショップ</div><div class="flex gap-1 flex-wrap">\${chBadges}</div></div>
         </div>
         <h4 class="font-semibold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-list text-slate-400 text-xs"></i> 対象商品/SKU 一覧（抜粋）</h4>
         <div class="overflow-hidden rounded-xl border border-gray-100">
@@ -1552,7 +1541,6 @@ function pimApp() {
         </div>
         <div class="mt-4 flex justify-end gap-2">
           <button onclick="document.getElementById('saleDetailModal').classList.remove('show')" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs hover:bg-gray-50">閉じる</button>
-          <button onclick="document.getElementById('saleDetailModal').classList.remove('show'); document.querySelector('[x-data]').__x.\$data.notify('データ連携予約画面を開きました','info')" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs hover:bg-slate-700 flex items-center gap-1.5"><i class='fas fa-link text-xs'></i> 連携予約へ</button>
         </div>
       \`;
       document.getElementById('saleDetailModal').classList.add('show');
