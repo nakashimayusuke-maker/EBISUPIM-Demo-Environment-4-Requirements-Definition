@@ -101,6 +101,11 @@ function getIndexHTML() {
       <span>セール履歴管理</span>
     </button>
 
+    <button @click="page='datalink'; datalinkPage='top'" :class="page==='datalink'?'active':''" class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-200">
+      <i class="fas fa-plug w-4 text-center opacity-70"></i>
+      <span>データ連携</span>
+    </button>
+
     <p class="text-slate-500 text-xs uppercase px-3 pt-4 pb-1 tracking-wider">連携</p>
 
     <button @click="page='emacs'" :class="page==='emacs'?'active':''" class="sidebar-item w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-200">
@@ -953,6 +958,348 @@ function getIndexHTML() {
   </section>
 
   <!-- ================================================================
+       PAGE: DATA LINK（データ連携）
+  ================================================================ -->
+  <section x-show="page==='datalink'" class="p-6 flex-1">
+
+    <!-- ===== TOP: データ連携トップ ===== -->
+    <div x-show="datalinkPage==='top'">
+      <div class="mb-6">
+        <h1 class="text-xl font-bold text-gray-800">データ連携</h1>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div @click="datalinkPage='connectors'; connectorTab='my'" class="bg-white rounded-xl border border-gray-200 p-6 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+              <i class="fas fa-plug text-blue-500"></i>
+            </div>
+            <h3 class="font-semibold text-gray-800">コネクタ</h3>
+          </div>
+          <p class="text-sm text-gray-500">データ連携に利用するコネクタを管理します。</p>
+        </div>
+        <div @click="datalinkPage='schedule'" class="bg-white rounded-xl border border-gray-200 p-6 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+              <i class="fas fa-calendar-check text-green-500"></i>
+            </div>
+            <h3 class="font-semibold text-gray-800">連携予約状況</h3>
+          </div>
+          <p class="text-sm text-gray-500">データ連携の予約状況を管理できます。</p>
+        </div>
+        <div @click="datalinkPage='history'" class="bg-white rounded-xl border border-gray-200 p-6 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
+              <i class="fas fa-history text-amber-500"></i>
+            </div>
+            <h3 class="font-semibold text-gray-800">連携履歴</h3>
+          </div>
+          <p class="text-sm text-gray-500">データ連携の履歴を閲覧できます。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONNECTORS: マイコネクタ一覧 ===== -->
+    <div x-show="datalinkPage==='connectors'">
+      <div class="flex items-center gap-2 mb-5">
+        <button @click="datalinkPage='top'" class="text-gray-400 hover:text-gray-600 text-sm flex items-center gap-1">
+          <i class="fas fa-arrow-left text-xs"></i>
+        </button>
+        <h1 class="text-xl font-bold text-gray-800">コネクタ</h1>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-0 mb-5 border-b border-gray-200">
+        <button @click="connectorTab='my'" :class="connectorTab==='my'?'border-b-2 border-blue-500 text-blue-600 font-medium':'text-gray-500 hover:text-gray-700'" class="px-5 py-2.5 text-sm transition-colors">マイコネクタ</button>
+        <button @click="connectorTab='search'" :class="connectorTab==='search'?'border-b-2 border-blue-500 text-blue-600 font-medium':'text-gray-500 hover:text-gray-700'" class="px-5 py-2.5 text-sm transition-colors">コネクタを探す</button>
+      </div>
+
+      <!-- マイコネクタ タブ -->
+      <div x-show="connectorTab==='my'">
+        <div class="flex items-center gap-3 mb-5">
+          <select class="border border-gray-200 rounded-lg text-sm px-3 py-2 focus:outline-none bg-white text-gray-600">
+            <option>コネクタ名の昇順</option>
+            <option>コネクタ名の降順</option>
+            <option>作成日の新しい順</option>
+          </select>
+          <button @click="notify('コネクタを追加しました','success')" class="ml-auto flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+            <i class="fas fa-plus text-xs"></i> コネクタを追加
+          </button>
+        </div>
+
+        <!-- Connector Cards Grid -->
+        <div class="grid grid-cols-3 gap-4">
+          <template x-for="conn in myConnectors" :key="conn.id">
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-gray-300 hover:shadow-sm transition-all">
+              <!-- Card Header -->
+              <div class="p-4 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-1">
+                  <div>
+                    <div class="font-bold text-sm" :class="conn.brand==='rakuten'?'text-red-600':'text-blue-700'" x-text="conn.brandLabel"></div>
+                    <div class="text-xs text-gray-500" x-text="conn.typeName"></div>
+                  </div>
+                  <div class="w-8 h-8 rounded-md flex items-center justify-center" :class="conn.brand==='rakuten'?'bg-red-50':'bg-blue-50'">
+                    <i class="text-sm" :class="conn.brand==='rakuten'?'fas fa-shopping-cart text-red-500':'fas fa-store text-blue-500'"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- Card Body -->
+              <div class="p-4 space-y-1.5 text-xs">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <div class="text-gray-400" x-text="conn.urlLabel"></div>
+                    <div class="text-gray-700 font-medium truncate" x-text="conn.shopUrl"></div>
+                  </div>
+                  <button @click="notify('接続情報を編集します','info')" class="ml-2 text-gray-300 hover:text-gray-500 flex-shrink-0">
+                    <i class="fas fa-pencil-alt text-xs"></i>
+                  </button>
+                </div>
+                <div>
+                  <div class="text-gray-400">店舗名</div>
+                  <div class="text-gray-700 font-medium" x-text="conn.shopName"></div>
+                </div>
+              </div>
+              <!-- Card Actions -->
+              <div class="px-4 pb-4 space-y-2">
+                <button @click="notify('接続情報の設定を開きました','info')" class="w-full py-2 text-xs border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                  接続情報の設定
+                </button>
+                <button @click="openJobManager(conn)" class="w-full py-2 text-xs border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                  ジョブの管理
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- コネクタを探す タブ -->
+      <div x-show="connectorTab==='search'">
+        <div class="relative mb-5">
+          <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+          <input type="text" placeholder="コネクタ名で検索..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-400">
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          <template x-for="tmpl in connectorTemplates" :key="tmpl.id">
+            <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+              <div class="w-10 h-10 rounded-lg mb-3 flex items-center justify-center" :class="tmpl.iconBg">
+                <i :class="tmpl.icon + ' text-lg'"></i>
+              </div>
+              <div class="font-semibold text-gray-800 text-sm mb-1" x-text="tmpl.name"></div>
+              <div class="text-xs text-gray-500 mb-3" x-text="tmpl.desc"></div>
+              <button @click="notify(tmpl.name + ' のコネクタを追加しました','success')" class="w-full py-1.5 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700">
+                追加する
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== JOB MANAGER: ジョブ管理 ===== -->
+    <div x-show="datalinkPage==='jobs'">
+      <div class="flex items-center gap-2 mb-5">
+        <button @click="datalinkPage='connectors'; connectorTab='my'" class="text-gray-400 hover:text-gray-600 text-sm flex items-center gap-1">
+          <i class="fas fa-arrow-left text-xs"></i>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold text-gray-800" x-text="selectedConnector ? selectedConnector.brandLabel + ' — ジョブ管理' : 'ジョブ管理'"></h1>
+          <div class="text-xs text-gray-500 mt-0.5" x-text="selectedConnector ? selectedConnector.shopName : ''"></div>
+        </div>
+        <button @click="notify('ジョブを追加しました','success')" class="ml-auto flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+          <i class="fas fa-plus text-xs"></i> ジョブを追加
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <template x-for="job in connectorJobs" :key="job.id">
+          <div class="bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <div class="font-semibold text-gray-800 text-sm" x-text="job.name"></div>
+                <div class="text-xs text-gray-500 mt-0.5" x-text="job.method"></div>
+              </div>
+              <span class="text-xs px-2 py-0.5 rounded-full" :class="job.active?'bg-green-50 text-green-600':'bg-gray-100 text-gray-400'" x-text="job.active?'有効':'無効'"></span>
+            </div>
+            <div class="text-xs text-gray-500 space-y-1 mb-4">
+              <div class="flex justify-between"><span class="text-gray-400">スケジュール</span><span x-text="job.schedule"></span></div>
+              <div class="flex justify-between"><span class="text-gray-400">最終実行</span><span x-text="job.lastRun"></span></div>
+              <div class="flex justify-between"><span class="text-gray-400">結果</span>
+                <span :class="job.lastStatus==='成功'?'text-green-600':'text-amber-600'" x-text="job.lastStatus"></span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button @click="openMapping(job)" class="flex-1 py-2 text-xs border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50">
+                <i class="fas fa-code-branch mr-1"></i> マッピング設定
+              </button>
+              <button @click="notify(job.name + ' を実行しました','success')" class="flex-1 py-2 text-xs bg-slate-800 text-white rounded-lg hover:bg-slate-700">
+                <i class="fas fa-play mr-1 text-xs"></i> 今すぐ実行
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- ===== MAPPING: データマッピング設定 ===== -->
+    <div x-show="datalinkPage==='mapping'">
+      <div class="flex items-center gap-2 mb-5">
+        <button @click="datalinkPage='jobs'" class="text-gray-400 hover:text-gray-600 flex items-center gap-1.5 text-sm">
+          <i class="fas fa-arrow-left text-xs"></i> <span>戻る</span>
+        </button>
+        <h1 class="text-xl font-bold text-gray-800 ml-2">データマッピング設定</h1>
+      </div>
+
+      <!-- Job info header -->
+      <div x-show="selectedJob" class="bg-white rounded-xl border border-gray-200 p-4 mb-5 flex items-center gap-4">
+        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+          :class="selectedConnector && selectedConnector.brand==='rakuten'?'bg-red-50':'bg-blue-50'">
+          <i :class="selectedConnector && selectedConnector.brand==='rakuten'?'fas fa-shopping-cart text-red-500':'fas fa-store text-blue-500'"></i>
+        </div>
+        <div class="flex-1">
+          <div class="font-bold text-sm" :class="selectedConnector && selectedConnector.brand==='rakuten'?'text-red-600':'text-blue-700'"
+            x-text="selectedConnector ? selectedConnector.brandLabel : ''"></div>
+          <div class="text-xs text-gray-500 mt-0.5">
+            ジョブ名 <span class="font-medium text-gray-700" x-text="selectedJob ? selectedJob.name : ''"></span>
+          </div>
+        </div>
+        <div class="text-right text-xs text-gray-500">
+          <div>連携方法</div>
+          <div class="font-medium text-gray-700" x-text="selectedJob ? selectedJob.method : ''"></div>
+        </div>
+      </div>
+
+      <!-- Mapping area -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <!-- Column headers -->
+        <div class="grid grid-cols-[1fr_40px_1fr] gap-4 mb-4">
+          <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">FROM EBISU PIM</div>
+          <div></div>
+          <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+            x-text="'TO ' + (selectedConnector ? selectedConnector.brandLabel : '')"></div>
+        </div>
+
+        <!-- Mapping rows -->
+        <div class="space-y-3">
+          <template x-for="(row, idx) in mappingRows" :key="idx">
+            <div class="grid grid-cols-[1fr_40px_1fr] gap-4 items-start">
+              <!-- FROM side -->
+              <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded">項目</span>
+                  <select x-model="row.from" class="flex-1 border border-blue-200 rounded-lg text-sm px-2 py-1.5 focus:outline-none focus:border-blue-400 bg-white text-gray-700">
+                    <option value="">-- 項目を選択 --</option>
+                    <template x-for="f in pimFields" :key="f.value">
+                      <option :value="f.value" x-text="f.label"></option>
+                    </template>
+                  </select>
+                </div>
+                <button @click="row.transforms.push({type:''})" class="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1">
+                  <i class="fas fa-plus text-xs"></i> データ変換を追加
+                </button>
+                <div x-show="row.transforms.length > 0" class="mt-2 space-y-1">
+                  <template x-for="(tr, ti) in row.transforms" :key="ti">
+                    <div class="flex items-center gap-1">
+                      <select x-model="tr.type" class="flex-1 border border-blue-200 rounded text-xs px-2 py-1 focus:outline-none bg-white text-gray-600">
+                        <option value="">変換タイプを選択</option>
+                        <option value="prefix">プレフィックス追加</option>
+                        <option value="suffix">サフィックス追加</option>
+                        <option value="replace">文字置換</option>
+                        <option value="trim">空白除去</option>
+                        <option value="upper">大文字変換</option>
+                      </select>
+                      <button @click="row.transforms.splice(ti,1)" class="text-red-300 hover:text-red-500 text-xs"><i class="fas fa-times"></i></button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <!-- Arrow -->
+              <div class="flex items-center justify-center pt-5">
+                <i class="fas fa-arrow-right text-gray-400 text-lg"></i>
+              </div>
+              <!-- TO side -->
+              <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-gray-600 bg-gray-200 px-2 py-0.5 rounded">項目</span>
+                  <span class="text-sm font-medium text-gray-700" x-text="row.to"></span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Add row button -->
+        <button @click="addMappingRow()" class="mt-4 w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-blue-300 hover:text-blue-500 transition-colors flex items-center justify-center gap-2">
+          <i class="fas fa-plus text-xs"></i> データマッピング行を追加
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="mt-4 flex justify-end gap-2">
+        <button @click="datalinkPage='jobs'" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50">キャンセル</button>
+        <button @click="notify('マッピング設定を保存しました','success')" class="px-5 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 flex items-center gap-2">
+          <i class="fas fa-save text-xs"></i> 保存する
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== SCHEDULE: 連携予約状況 ===== -->
+    <div x-show="datalinkPage==='schedule'">
+      <div class="flex items-center gap-2 mb-5">
+        <button @click="datalinkPage='top'" class="text-gray-400 hover:text-gray-600 text-sm"><i class="fas fa-arrow-left text-xs"></i></button>
+        <h1 class="text-xl font-bold text-gray-800">連携予約状況</h1>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">コネクタ</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">ジョブ名</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">予約日時</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">ステータス</th>
+              <th class="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50 text-xs">
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（rakuten_honda）</td><td class="px-4 py-3 text-gray-700">商品データ更新用定期実行ジョブ</td><td class="px-4 py-3 text-gray-600">2026/07/06 03:00</td><td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">予約済</span></td><td class="px-4 py-3"><button @click="notify('予約をキャンセルしました','info')" class="text-xs text-gray-400 hover:text-red-500">キャンセル</button></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（テスト0710）</td><td class="px-4 py-3 text-gray-700">商品データ更新用定期実行ジョブ</td><td class="px-4 py-3 text-gray-600">2026/07/06 03:00</td><td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">予約済</span></td><td class="px-4 py-3"><button @click="notify('予約をキャンセルしました','info')" class="text-xs text-gray-400 hover:text-red-500">キャンセル</button></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-blue-700 font-medium">EBISUMART（TSUNAGU）</td><td class="px-4 py-3 text-gray-700">在庫・価格同期ジョブ</td><td class="px-4 py-3 text-gray-600">2026/07/06 06:00</td><td class="px-4 py-3"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">実行中</span></td><td class="px-4 py-3"><button class="text-xs text-gray-300 cursor-not-allowed">キャンセル</button></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（20260224）</td><td class="px-4 py-3 text-gray-700">画像アップロードジョブ</td><td class="px-4 py-3 text-gray-600">2026/07/07 00:00</td><td class="px-4 py-3"><span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">予約済</span></td><td class="px-4 py-3"><button @click="notify('予約をキャンセルしました','info')" class="text-xs text-gray-400 hover:text-red-500">キャンセル</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== HISTORY: 連携履歴 ===== -->
+    <div x-show="datalinkPage==='history'">
+      <div class="flex items-center gap-2 mb-5">
+        <button @click="datalinkPage='top'" class="text-gray-400 hover:text-gray-600 text-sm"><i class="fas fa-arrow-left text-xs"></i></button>
+        <h1 class="text-xl font-bold text-gray-800">連携履歴</h1>
+      </div>
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">実行日時</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">コネクタ</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">ジョブ名</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">件数</th>
+              <th class="text-left px-4 py-3 text-gray-400 font-medium text-xs">結果</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50 text-xs">
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-gray-600">2026/07/05 03:01</td><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（rakuten_honda）</td><td class="px-4 py-3 text-gray-700">商品データ更新用定期実行ジョブ</td><td class="px-4 py-3 text-gray-600">312件</td><td class="px-4 py-3"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">成功</span></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-gray-600">2026/07/05 03:01</td><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（テスト0710）</td><td class="px-4 py-3 text-gray-700">商品データ更新用定期実行ジョブ</td><td class="px-4 py-3 text-gray-600">87件</td><td class="px-4 py-3"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">成功</span></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-gray-600">2026/07/04 06:00</td><td class="px-4 py-3 text-blue-700 font-medium">EBISUMART（TSUNAGU）</td><td class="px-4 py-3 text-gray-700">在庫・価格同期ジョブ</td><td class="px-4 py-3 text-gray-600">1,284件</td><td class="px-4 py-3"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">成功</span></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-gray-600">2026/07/04 03:01</td><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（20260224）</td><td class="px-4 py-3 text-gray-700">画像アップロードジョブ</td><td class="px-4 py-3 text-gray-600">23件</td><td class="px-4 py-3"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">一部エラー</span></td></tr>
+            <tr class="hover:bg-gray-50"><td class="px-4 py-3 text-gray-600">2026/07/03 03:01</td><td class="px-4 py-3 text-red-600 font-medium">楽天RMS（rakuten_honda）</td><td class="px-4 py-3 text-gray-700">商品データ更新用定期実行ジョブ</td><td class="px-4 py-3 text-gray-600">298件</td><td class="px-4 py-3"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">成功</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================================================================
        PAGE: SALE（セール履歴管理）
   ================================================================ -->
   <section x-show="page==='sale'" class="p-6 flex-1">
@@ -1376,10 +1723,24 @@ function pimApp() {
     prodStatus: '',
     priceFilter: '今後',
 
+    // ===== DATA LINK =====
+    datalinkPage: 'top',
+    connectorTab: 'my',
+    selectedConnector: null,
+    selectedJob: null,
+    mappingRows: [],
+
     init() {},
 
     breadcrumb() {
-      const m = { dashboard:'ダッシュボード', products:'商品マスタ (No.1)', images:'画像管理 (No.2・5)', emacs:'EMACS連携 (No.3)', prices:'価格管理 (No.4)', box:'BOX連携 (No.5)', channels:'EC連携設定', export:'フォーマットDL', sale:'セール履歴管理' };
+      const m = { dashboard:'ダッシュボード', products:'商品マスタ (No.1)', images:'画像管理 (No.2・5)', emacs:'EMACS連携 (No.3)', prices:'価格管理 (No.4)', box:'BOX連携 (No.5)', channels:'EC連携設定', export:'フォーマットDL', sale:'セール履歴管理', datalink:'データ連携' };
+      if (this.page === 'datalink') {
+        if (this.datalinkPage === 'connectors') return 'EBISU PIM › データ連携 › コネクタ';
+        if (this.datalinkPage === 'mapping') return 'EBISU PIM › データ連携 › コネクタ › マッピング設定';
+        if (this.datalinkPage === 'schedule') return 'EBISU PIM › データ連携 › 連携予約状況';
+        if (this.datalinkPage === 'history') return 'EBISU PIM › データ連携 › 連携履歴';
+        return 'EBISU PIM › データ連携';
+      }
       return 'EBISU PIM › ' + (m[this.page] || this.page);
     },
 
@@ -1561,6 +1922,79 @@ function pimApp() {
       { code:'EST-EA003', name:'ゴールドピアス シンプル', price:15800, salePrice:13800 },
       { code:'EST-RG005', name:'サファイアリング ロイヤル', price:89000, salePrice:79000 },
     ],
+
+    // ===== CONNECTORS DATA =====
+    myConnectors: [
+      { id:1, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'rakuten_honda', shopName:'rakuten_honda' },
+      { id:2, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'テスト0710', shopName:'テスト0710' },
+      { id:3, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'20260513YZ', shopName:'20260513山番様' },
+      { id:4, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'20260224', shopName:'202602241137' },
+      { id:5, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'Rakuten0710', shopName:'Rakuten0710' },
+      { id:6, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'test', shopName:'楽天 確認店舗' },
+      { id:7, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'test', shopName:'20260220_02_test' },
+      { id:8, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'test', shopName:'20260302_test' },
+      { id:9, brand:'rakuten', brandLabel:'Rakuten', typeName:'RMS連携', urlLabel:'店舗URI', shopUrl:'test', shopName:'test' },
+      { id:10, brand:'ebisumart', brandLabel:'EBISUMART', typeName:'EBISUMART連携', urlLabel:'サイトURL', shopUrl:'tsunagu.ebisumart.com', shopName:'TSUNAGUオーダー' },
+      { id:11, brand:'ebisumart', brandLabel:'EBISUMART', typeName:'EBISUMART連携', urlLabel:'サイトURL', shopUrl:'nakashi.ebisumart.com', shopName:'NAKASHI JEWEL GARDEN' },
+    ],
+
+    connectorTemplates: [
+      { id:1, name:'楽天市場 RMS', desc:'楽天市場のRMS APIを使った商品・価格・在庫連携', iconBg:'bg-red-50', icon:'fas fa-shopping-cart text-red-500' },
+      { id:2, name:'EBISUMART', desc:'EBISUMARTのAPIを使った商品データ連携', iconBg:'bg-blue-50', icon:'fas fa-store text-blue-500' },
+      { id:3, name:'Amazon SP-API', desc:'AmazonのSelling Partner APIを使った商品連携', iconBg:'bg-amber-50', icon:'fas fa-amazon text-amber-600' },
+      { id:4, name:'ZOZOTOWN', desc:'ZOZOTOWNへのCSV形式での商品データ連携', iconBg:'bg-gray-50', icon:'fas fa-tshirt text-gray-500' },
+      { id:5, name:'Shopify', desc:'Shopify Admin APIを使った商品・在庫連携', iconBg:'bg-green-50', icon:'fas fa-shopping-bag text-green-500' },
+      { id:6, name:'マルイウェブチャネル', desc:'マルイウェブチャネルへのCSV連携', iconBg:'bg-purple-50', icon:'fas fa-building text-purple-500' },
+    ],
+
+    connectorJobs: [
+      { id:1, name:'商品データ更新用定期実行ジョブ', method:'商品データ更新用定期実行ジョブ', active:true, schedule:'毎日 03:00', lastRun:'2026/07/05 03:01', lastStatus:'成功',
+        toFields:['商品番号','SKU','商品名','商品説明','価格','在庫数'] },
+      { id:2, name:'画像アップロードジョブ', method:'画像一括アップロード', active:true, schedule:'毎週月 00:00', lastRun:'2026/07/04 00:01', lastStatus:'成功',
+        toFields:['商品番号','画像URL（メイン）','画像URL（サブ1）','画像URL（サブ2）'] },
+      { id:3, name:'在庫・価格同期ジョブ', method:'在庫・価格リアルタイム同期', active:false, schedule:'毎時', lastRun:'2026/07/03 10:00', lastStatus:'停止中',
+        toFields:['商品番号','SKU','価格','在庫数'] },
+    ],
+
+    pimFields: [
+      { value:'product_code', label:'商品マスタ.商品コード' },
+      { value:'product_name', label:'商品マスタ.商品名' },
+      { value:'product_name_en', label:'商品マスタ.商品名(英語)' },
+      { value:'product_desc', label:'商品マスタ.商品説明' },
+      { value:'category', label:'商品マスタ.カテゴリ' },
+      { value:'material', label:'商品マスタ.素材' },
+      { value:'sku_code', label:'SKUマスタ.SKUコード' },
+      { value:'sku_color', label:'SKUマスタ.カラー' },
+      { value:'sku_size', label:'SKUマスタ.サイズ' },
+      { value:'price_normal', label:'価格マスタ.通常価格' },
+      { value:'price_sale', label:'価格マスタ.セール価格' },
+      { value:'stock', label:'在庫マスタ.在庫数' },
+      { value:'image_main', label:'画像マスタ.メイン画像URL' },
+      { value:'image_sub1', label:'画像マスタ.サブ画像1URL' },
+      { value:'image_sub2', label:'画像マスタ.サブ画像2URL' },
+      { value:'emacs_code', label:'EMACSコード.生産コード' },
+    ],
+
+    openJobManager(conn) {
+      this.selectedConnector = conn;
+      this.datalinkPage = 'jobs';
+    },
+
+    openMapping(job) {
+      this.selectedJob = job;
+      // Initialize mapping rows from job's toFields
+      this.mappingRows = job.toFields.map((f, i) => ({
+        from: ['product_code','sku_code','product_name','product_desc','price_normal','stock','image_main','image_sub1'][i] || '',
+        to: f,
+        transforms: []
+      }));
+      this.datalinkPage = 'mapping';
+    },
+
+    addMappingRow() {
+      const toFieldLabel = 'TO項目' + (this.mappingRows.length + 1);
+      this.mappingRows.push({ from: '', to: toFieldLabel, transforms: [] });
+    },
   }
 }
 </script>
