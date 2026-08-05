@@ -1917,15 +1917,15 @@ function pimApp() {
       });
     },
 
-    imgItems: Array.from({length:24}, (_,i) => ({
+    imgItems: Array.from({length:24}, function(_,i) { return {
       id: i+1,
-      file: \`EST-\${['RG','NK','EA','BR','BC'][i%5]}00\${(i%9)+1}_\${['WG','YG','PT','SV'][i%4]}_0\${(i%5)+1}.jpg\`,
-      code: \`EST-\${['RG','NK','EA','BR','BC'][i%5]}00\${(i%9)+1}\`,
+      file: 'EST-' + ['RG','NK','EA','BR','BC'][i%5] + '00' + ((i%9)+1) + '_' + ['WG','YG','PT','SV'][i%4] + '_0' + ((i%5)+1) + '.jpg',
+      code: 'EST-' + ['RG','NK','EA','BR','BC'][i%5] + '00' + ((i%9)+1),
       bg: ['bg-rose-50','bg-amber-50','bg-blue-50','bg-emerald-50','bg-purple-50'][i%5],
       ic: ['text-rose-200','text-amber-200','text-blue-200','text-emerald-200','text-purple-200'][i%5],
       isNew: i < 4,
       linked: i % 7 !== 0,
-    })),
+    }; }),
 
     priceItems: [
       { id:1, name:'ダイヤモンドリング クラシック', cur:42000, nxt:46000, date:'2026/06/15', chs:['楽天','Amazon','ZOZO','マルイ'], auto:['楽天','Amazon'] },
@@ -2000,46 +2000,45 @@ function pimApp() {
         : s.status === '予定'
         ? '<span class="bg-blue-50 text-blue-600 text-xs px-2 py-0.5 rounded-full">予定</span>'
         : '<span class="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full">終了</span>';
-      const chBadges = s.channels.map(c => \`<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">\${c}</span>\`).join(' ');
-      const rows = items.map(it => {
+      const chBadges = s.channels.map(function(c) { return '<span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">' + c + '</span>'; }).join(' ');
+      const rows = items.map(function(it) {
         const rate = Math.round((it.price - it.salePrice) / it.price * 100);
-        return \`<tr class="hover:bg-gray-50">
-          <td class="px-4 py-2.5 font-mono text-xs text-gray-500">\${it.code}</td>
-          <td class="px-4 py-2.5 text-xs text-gray-700">\${it.name}</td>
-          <td class="px-4 py-2.5 font-mono text-xs text-gray-400">\${it.sku}</td>
-          <td class="px-4 py-2.5 text-xs text-gray-500">¥\${it.price.toLocaleString()}</td>
-          <td class="px-4 py-2.5 text-xs font-bold text-rose-600">¥\${it.salePrice.toLocaleString()}</td>
-          <td class="px-4 py-2.5 text-xs font-semibold text-green-600">-\${rate}%</td>
-          <td class="px-4 py-2.5 text-xs text-gray-500">\${it.channel}</td>
-        </tr>\`;
+        return '<tr class="hover:bg-gray-50">'
+          + '<td class="px-4 py-2.5 font-mono text-xs text-gray-500">' + it.code + '</td>'
+          + '<td class="px-4 py-2.5 text-xs text-gray-700">' + it.name + '</td>'
+          + '<td class="px-4 py-2.5 font-mono text-xs text-gray-400">' + it.sku + '</td>'
+          + '<td class="px-4 py-2.5 text-xs text-gray-500">\u00a5' + it.price.toLocaleString() + '</td>'
+          + '<td class="px-4 py-2.5 text-xs font-bold text-rose-600">\u00a5' + it.salePrice.toLocaleString() + '</td>'
+          + '<td class="px-4 py-2.5 text-xs font-semibold text-green-600">-' + rate + '%</td>'
+          + '<td class="px-4 py-2.5 text-xs text-gray-500">' + it.channel + '</td>'
+          + '</tr>';
       }).join('');
-      document.getElementById('saleDetailContent').innerHTML = \`
-        <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
-          <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">ステータス</div><div>\${statusBadge}</div></div>
-          <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">登録日</div><div class="text-gray-700 text-xs">\${s.createdAt}</div></div>
-          <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">セール期間</div><div class="text-gray-700 text-xs">\${s.start} 〜 \${s.end}</div></div>
-          <div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">対象商品数</div><div class="font-bold text-gray-800">\${s.itemCount}件</div></div>
-          <div class="col-span-2 bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-2">コネクタ/ショップ</div><div class="flex gap-1 flex-wrap">\${chBadges}</div></div>
-        </div>
-        <h4 class="font-semibold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-list text-slate-400 text-xs"></i> 対象商品/SKU 一覧（抜粋）</h4>
-        <div class="overflow-hidden rounded-xl border border-gray-100">
-          <table class="w-full text-xs">
-            <thead class="bg-gray-50"><tr>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">商品コード</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">商品名</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">SKU</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">通常価格</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">セール価格</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">割引率</th>
-              <th class="text-left px-4 py-2.5 text-gray-400 font-medium">チャネル</th>
-            </tr></thead>
-            <tbody class="divide-y divide-gray-50">\${rows}</tbody>
-          </table>
-        </div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button onclick="document.getElementById('saleDetailModal').classList.remove('show')" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs hover:bg-gray-50">閉じる</button>
-        </div>
-      \`;
+      document.getElementById('saleDetailContent').innerHTML =
+        '<div class="grid grid-cols-2 gap-3 mb-5 text-sm">'
+        + '<div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">ステータス</div><div>' + statusBadge + '</div></div>'
+        + '<div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">登録日</div><div class="text-gray-700 text-xs">' + s.createdAt + '</div></div>'
+        + '<div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">セール期間</div><div class="text-gray-700 text-xs">' + s.start + ' 〜 ' + s.end + '</div></div>'
+        + '<div class="bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-1">対象商品数</div><div class="font-bold text-gray-800">' + s.itemCount + '件</div></div>'
+        + '<div class="col-span-2 bg-gray-50 rounded-lg p-3"><div class="text-xs text-gray-400 mb-2">コネクタ/ショップ</div><div class="flex gap-1 flex-wrap">' + chBadges + '</div></div>'
+        + '</div>'
+        + '<h4 class="font-semibold text-gray-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-list text-slate-400 text-xs"></i> 対象商品/SKU 一覧（抜粋）</h4>'
+        + '<div class="overflow-hidden rounded-xl border border-gray-100">'
+        + '<table class="w-full text-xs">'
+        + '<thead class="bg-gray-50"><tr>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">商品コード</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">商品名</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">SKU</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">通常価格</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">セール価格</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">割引率</th>'
+        + '<th class="text-left px-4 py-2.5 text-gray-400 font-medium">チャネル</th>'
+        + '</tr></thead>'
+        + '<tbody class="divide-y divide-gray-50">' + rows + '</tbody>'
+        + '</table>'
+        + '</div>'
+        + '<div class="mt-4 flex justify-end gap-2">'
+        + '<button onclick="document.getElementById(\'saleDetailModal\').classList.remove(\'show\')" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs hover:bg-gray-50">閉じる</button>'
+        + '</div>';
       document.getElementById('saleDetailModal').classList.add('show');
     },
 
@@ -2139,3 +2138,4 @@ function pimApp() {
 }
 
 export default app
+
