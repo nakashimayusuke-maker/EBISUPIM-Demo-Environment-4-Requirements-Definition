@@ -1864,8 +1864,8 @@ function pimApp() {
       ]);
 
       // CSV文字列生成
-      const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
-      const bom = '\uFEFF'; // Excel用BOM（UTF-8）
+      const csvContent = [headers, ...rows].map(r => r.join(',')).join(String.fromCharCode(10));
+      const bom = String.fromCharCode(0xFEFF); // Excel用BOM（UTF-8）
       const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
 
@@ -1873,7 +1873,7 @@ function pimApp() {
       const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'price_update_' + channelName.replace(/\s+/g,'_') + '_' + today + '.csv';
+      a.download = 'price_update_' + channelName.split(' ').join('_') + '_' + today + '.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -2007,8 +2007,8 @@ function pimApp() {
           + '<td class="px-4 py-2.5 font-mono text-xs text-gray-500">' + it.code + '</td>'
           + '<td class="px-4 py-2.5 text-xs text-gray-700">' + it.name + '</td>'
           + '<td class="px-4 py-2.5 font-mono text-xs text-gray-400">' + it.sku + '</td>'
-          + '<td class="px-4 py-2.5 text-xs text-gray-500">\u00a5' + it.price.toLocaleString() + '</td>'
-          + '<td class="px-4 py-2.5 text-xs font-bold text-rose-600">\u00a5' + it.salePrice.toLocaleString() + '</td>'
+          + '<td class="px-4 py-2.5 text-xs text-gray-500">&#165;' + it.price.toLocaleString() + '</td>'
+          + '<td class="px-4 py-2.5 text-xs font-bold text-rose-600">&#165;' + it.salePrice.toLocaleString() + '</td>'
           + '<td class="px-4 py-2.5 text-xs font-semibold text-green-600">-' + rate + '%</td>'
           + '<td class="px-4 py-2.5 text-xs text-gray-500">' + it.channel + '</td>'
           + '</tr>';
@@ -2037,7 +2037,7 @@ function pimApp() {
         + '</table>'
         + '</div>'
         + '<div class="mt-4 flex justify-end gap-2">'
-        + '<button onclick="document.getElementById(\'saleDetailModal\').classList.remove(\'show\')" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs hover:bg-gray-50">閉じる</button>'
+        + '<button onclick="document.getElementById(&apos;saleDetailModal&apos;).classList.remove(&apos;show&apos;)" class="px-4 py-2 border border-gray-200 text-gray-600 rounded-lg text-xs hover:bg-gray-50">閉じる</button>'
         + '</div>';
       document.getElementById('saleDetailModal').classList.add('show');
     },
