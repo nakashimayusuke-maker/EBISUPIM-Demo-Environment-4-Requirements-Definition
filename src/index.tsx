@@ -723,6 +723,92 @@ function getIndexHTML() {
             </tbody>
           </table>
         </div>
+
+        <!-- CSV一括出力セクション（手動CSVチャネル向け） -->
+        <div class="bg-white rounded-xl border border-amber-100 shadow-sm mt-4 overflow-hidden">
+          <div class="bg-amber-50 px-4 py-3 border-b border-amber-100 flex items-center gap-2">
+            <i class="fas fa-file-export text-amber-500 text-sm"></i>
+            <h3 class="font-semibold text-amber-800 text-sm">価格CSV出力 <span class="text-xs font-normal text-amber-600 ml-1">（手動連携チャネル）</span></h3>
+          </div>
+          <div class="p-4">
+            <p class="text-xs text-gray-500 mb-4">以下のチャネルは価格連携が「手動(CSV)」です。改定前にCSVを出力・アップロードしてください。</p>
+            <div class="grid grid-cols-3 gap-3">
+              <!-- ZOZOTOWN -->
+              <div class="border border-gray-100 rounded-xl p-4 hover:border-amber-200 hover:bg-amber-50/30 transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-base">👗</div>
+                  <div>
+                    <div class="font-semibold text-gray-800 text-xs">ZOZOTOWN</div>
+                    <div class="text-xs text-amber-600">手動(CSV)</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-400 mb-1">対象改定件数</div>
+                <div class="text-lg font-bold text-gray-800 mb-3">2 <span class="text-xs font-normal text-gray-400">件</span></div>
+                <div class="space-y-1.5">
+                  <button @click="exportPriceCsv('ZOZOTOWN')" class="w-full flex items-center justify-center gap-1.5 py-2 bg-amber-500 text-white rounded-lg text-xs hover:bg-amber-600 transition-colors font-medium">
+                    <i class="fas fa-download"></i> CSV出力
+                  </button>
+                  <button @click="notify('ZOZOTOWNのアップロードページを開きました','info')" class="w-full flex items-center justify-center gap-1.5 py-1.5 border border-gray-200 text-gray-500 rounded-lg text-xs hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-upload text-xs"></i> アップロード手順
+                  </button>
+                </div>
+              </div>
+
+              <!-- マルイウェブチャネル -->
+              <div class="border border-gray-100 rounded-xl p-4 hover:border-amber-200 hover:bg-amber-50/30 transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-base">🏬</div>
+                  <div>
+                    <div class="font-semibold text-gray-800 text-xs">マルイウェブチャネル</div>
+                    <div class="text-xs text-amber-600">手動(CSV)</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-400 mb-1">対象改定件数</div>
+                <div class="text-lg font-bold text-gray-800 mb-3">2 <span class="text-xs font-normal text-gray-400">件</span></div>
+                <div class="space-y-1.5">
+                  <button @click="exportPriceCsv('マルイウェブチャネル')" class="w-full flex items-center justify-center gap-1.5 py-2 bg-amber-500 text-white rounded-lg text-xs hover:bg-amber-600 transition-colors font-medium">
+                    <i class="fas fa-download"></i> CSV出力
+                  </button>
+                  <button @click="notify('マルイウェブチャネルのアップロードページを開きました','info')" class="w-full flex items-center justify-center gap-1.5 py-1.5 border border-gray-200 text-gray-500 rounded-lg text-xs hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-upload text-xs"></i> アップロード手順
+                  </button>
+                </div>
+              </div>
+
+              <!-- BLOOM ONLINE STORE -->
+              <div class="border border-gray-100 rounded-xl p-4 hover:border-amber-200 hover:bg-amber-50/30 transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-base">🌸</div>
+                  <div>
+                    <div class="font-semibold text-gray-800 text-xs">BLOOM ONLINE STORE</div>
+                    <div class="text-xs text-amber-600">手動(CSV) / PVS</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-400 mb-1">対象改定件数</div>
+                <div class="text-lg font-bold text-gray-800 mb-3">— <span class="text-xs font-normal text-gray-400">件</span></div>
+                <div class="space-y-1.5">
+                  <button @click="exportPriceCsv('BLOOM ONLINE STORE')" class="w-full flex items-center justify-center gap-1.5 py-2 bg-amber-500 text-white rounded-lg text-xs hover:bg-amber-600 transition-colors font-medium">
+                    <i class="fas fa-download"></i> CSV出力
+                  </button>
+                  <button @click="notify('BLOOM ONLINE STOREのアップロードページを開きました','info')" class="w-full flex items-center justify-center gap-1.5 py-1.5 border border-gray-200 text-gray-500 rounded-lg text-xs hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-upload text-xs"></i> アップロード手順
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 一括出力ボタン -->
+            <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+              <div class="text-xs text-gray-400 flex items-center gap-1.5">
+                <i class="fas fa-info-circle"></i>
+                <span>ZOZOTOWNはAPIによる出荷連携必須のためCSV手動、マルイ・BLOOMはAPI未対応</span>
+              </div>
+              <button @click="exportAllPriceCsv()" class="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg text-xs hover:bg-slate-800 transition-colors font-medium">
+                <i class="fas fa-file-archive"></i> 3チャネル一括CSV出力
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Legend / Channel map -->
@@ -735,11 +821,11 @@ function getIndexHTML() {
           <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></span><span class="text-gray-700">TSUNAGU</span><span class="ml-auto text-gray-400">テキスト・画像・価格</span></div>
           <div class="border-t border-gray-100 my-2"></div>
           <div class="text-gray-400 font-medium uppercase tracking-wide mb-1">価格のみ自動 (CSV手動)</div>
-          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">ZOZOTOWN</span></div>
-          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">マルイウェブ</span></div>
+          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">ZOZOTOWN</span><button @click="exportPriceCsv('ZOZOTOWN')" class="ml-auto flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 rounded text-xs hover:bg-amber-100 transition-colors"><i class="fas fa-download text-xs"></i>CSV</button></div>
+          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">マルイウェブ</span><button @click="exportPriceCsv('マルイウェブチャネル')" class="ml-auto flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 rounded text-xs hover:bg-amber-100 transition-colors"><i class="fas fa-download text-xs"></i>CSV</button></div>
           <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">Shopify (NKS)</span></div>
           <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">Shopify (Zsys)</span></div>
-          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">BLOOM (PVS)</span></div>
+          <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span><span class="text-gray-700">BLOOM (PVS)</span><button @click="exportPriceCsv('BLOOM ONLINE STORE')" class="ml-auto flex items-center gap-1 px-1.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 rounded text-xs hover:bg-amber-100 transition-colors"><i class="fas fa-download text-xs"></i>CSV</button></div>
         </div>
       </div>
     </div>
@@ -1757,6 +1843,56 @@ function pimApp() {
     },
 
     openProductAdd() { this.notify('商品追加フォームを開きました', 'info'); },
+
+    // CSV出力ロジック（価格連携 手動チャネル向け）
+    exportPriceCsv(channelName) {
+      // 対象チャネルの価格改定データを抽出
+      const channelMap = { 'ZOZOTOWN': 'ZOZO', 'マルイウェブチャネル': 'マルイ', 'BLOOM ONLINE STORE': 'BLOOM' };
+      const shortName = channelMap[channelName] || channelName;
+      const targetItems = this.priceItems.filter(p => p.chs.includes(shortName) || p.chs.includes(channelName));
+
+      // CSVヘッダー
+      const headers = ['商品コード', '商品名', '現在価格', '改定後価格', '差額', '改定日', '連携先チャネル'];
+      const rows = targetItems.map(p => [
+        'EST-' + String(p.id).padStart(5,'0'),
+        p.name,
+        p.cur,
+        p.nxt,
+        p.nxt - p.cur,
+        p.date,
+        channelName
+      ]);
+
+      // CSV文字列生成
+      const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+      const bom = '\uFEFF'; // Excel用BOM（UTF-8）
+      const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      // ダウンロード実行
+      const today = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'price_update_' + channelName.replace(/\s+/g,'_') + '_' + today + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      const count = targetItems.length;
+      this.notify(channelName + ' の価格CSVを出力しました（' + count + '件）', 'success');
+    },
+
+    exportAllPriceCsv() {
+      // 3チャネル順番にCSV出力（少し間隔を開けてダウンロード）
+      const channels = ['ZOZOTOWN', 'マルイウェブチャネル', 'BLOOM ONLINE STORE'];
+      channels.forEach((ch, i) => {
+        setTimeout(() => this.exportPriceCsv(ch), i * 400);
+      });
+      setTimeout(() => {
+        this.notify('3チャネル分の価格CSVを一括出力しました', 'success');
+      }, channels.length * 400 + 100);
+    },
 
     products: [
       { id:1, name:'ダイヤモンドリング クラシック', nameEn:'Diamond Ring Classic', code:'EST-RG001', emacsCode:'100400020305', category:'リング', skuCount:12, imgCount:8, price:42000, cost:18000, status:'公開中', iconBg:'bg-rose-50', iconColor:'text-rose-300', materials:['Pt900','ダイヤモンド 0.3ct'], channels:['楽天','Amazon','ZOZO'] },
