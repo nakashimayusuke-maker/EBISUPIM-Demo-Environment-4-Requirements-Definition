@@ -219,7 +219,7 @@ function getIndexHTML() {
           </div>
           <div class="px-4 py-3 flex items-center gap-3 text-sm">
             <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0"><i class="fas fa-images text-purple-600 text-xs"></i></div>
-            <div class="flex-1"><div class="text-gray-700">BOXから画像を自動取込・紐付け</div><div class="text-gray-400 text-xs">156枚 · 08:15</div></div>
+            <div class="flex-1"><div class="text-gray-700">BOXから画像を自動取込（命名規則で商品コード認識）</div><div class="text-gray-400 text-xs">156枚 · 08:15</div></div>
             <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">完了</span>
           </div>
           <div class="px-4 py-3 flex items-center gap-3 text-sm">
@@ -474,11 +474,11 @@ function getIndexHTML() {
       </div>
       <div class="bg-white rounded-xl border border-gray-100 p-4 text-center shadow-sm">
         <div class="text-2xl font-bold text-green-600">8,201</div>
-        <div class="text-xs text-gray-500 mt-1">商品紐付け済み</div>
+        <div class="text-xs text-gray-500 mt-1">商品コード認識済み</div>
       </div>
       <div class="bg-white rounded-xl border border-gray-100 p-4 text-center shadow-sm">
         <div class="text-2xl font-bold text-amber-500">231</div>
-        <div class="text-xs text-gray-500 mt-1">未紐付け</div>
+        <div class="text-xs text-gray-500 mt-1">認識不可（命名規則外）</div>
       </div>
       <div class="bg-white rounded-xl border border-gray-100 p-4 text-center shadow-sm">
         <div class="text-2xl font-bold text-blue-600">156</div>
@@ -499,7 +499,7 @@ function getIndexHTML() {
         <option>カテゴリ：すべて</option><option>リング</option><option>ネックレス</option><option>ピアス</option>
       </select>
       <label class="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
-        <input type="checkbox" class="rounded"> 未紐付けのみ表示
+        <input type="checkbox" class="rounded"> 認識不可のみ表示
       </label>
       <div class="flex border border-gray-200 rounded-lg overflow-hidden ml-auto">
         <button class="px-3 py-1.5 bg-slate-800 text-white text-xs"><i class="fas fa-th"></i></button>
@@ -516,10 +516,10 @@ function getIndexHTML() {
             <!-- hover actions -->
             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center gap-2">
               <button class="opacity-0 group-hover:opacity-100 w-7 h-7 bg-white rounded-full flex items-center justify-center text-gray-700 shadow text-xs transition-opacity" @click.stop="notify('ダウンロードしました','success')"><i class="fas fa-download"></i></button>
-              <button class="opacity-0 group-hover:opacity-100 w-7 h-7 bg-white rounded-full flex items-center justify-center text-gray-700 shadow text-xs transition-opacity" @click.stop="notify('商品に紐付けました','success')"><i class="fas fa-link"></i></button>
+
             </div>
             <div x-show="img.isNew" class="absolute top-1 left-1 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded">NEW</div>
-            <div x-show="!img.linked" class="absolute top-1 right-1 bg-amber-400 text-white text-xs px-1.5 py-0.5 rounded">未紐付</div>
+
           </div>
           <div class="p-2">
             <div class="text-xs text-gray-700 truncate font-medium" x-text="img.file"></div>
@@ -531,7 +531,7 @@ function getIndexHTML() {
 
     <div class="mt-4 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700 flex items-start gap-3">
       <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
-      <div><strong>一括ダウンロード：</strong>商品を選択して「一括ダウンロード」を押すと、PR資料用に商品紐付き画像をZIPでまとめてダウンロードできます。閲覧権限に応じて下代情報を非表示にした状態で出力可能です。</div>
+      <div><strong>一括ダウンロード：</strong>商品を選択して「一括ダウンロード」を押すと、PR資料用に商品画像をZIPでまとめてダウンロードできます。閲覧権限に応じて下代情報を非表示にした状態で出力可能です。</div>
     </div>
   </section>
 
@@ -958,14 +958,14 @@ function getIndexHTML() {
         <div class="text-xs text-gray-400 mt-1">枚</div>
       </div>
       <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-        <div class="text-xs text-gray-500 mb-1">自動紐付け成功</div>
+        <div class="text-xs text-gray-500 mb-1">命名規則認識成功</div>
         <div class="text-2xl font-bold text-green-600">143</div>
         <div class="text-xs text-gray-400 mt-1">/ 156枚</div>
       </div>
       <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-        <div class="text-xs text-gray-500 mb-1">未紐付け</div>
+        <div class="text-xs text-gray-500 mb-1">認識不可</div>
         <div class="text-2xl font-bold text-amber-500">13</div>
-        <div class="text-xs text-gray-400 mt-1">手動対応要</div>
+        <div class="text-xs text-gray-400 mt-1">命名規則外</div>
       </div>
     </div>
 
@@ -998,14 +998,14 @@ function getIndexHTML() {
       <!-- Naming rule -->
       <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
         <h3 class="font-semibold text-gray-700 text-sm mb-4 flex items-center gap-2">
-          <i class="fas fa-tag text-slate-400"></i> 命名規則・自動紐付けルール
+          <i class="fas fa-tag text-slate-400"></i> 命名規則設定
         </h3>
         <div class="text-xs text-gray-500 mb-3">BOXのファイル名から商品コードを抽出するルール</div>
         <div class="bg-gray-50 rounded-lg p-3 text-xs font-mono text-gray-700 mb-3">
           <div class="text-gray-400 mb-1">パターン例：</div>
           <div class="text-blue-600">{商品コード}</div>
           <div class="text-gray-500">_ <span class="text-purple-600">{色コード}</span> _ <span class="text-amber-500">{連番}</span>.jpg</div>
-          <div class="mt-2 text-gray-600">EST-RG001_WG_01.jpg → <span class="text-green-600">EST-RG001</span> に紐付</div>
+          <div class="mt-2 text-gray-600">EST-RG001_WG_01.jpg → <span class="text-green-600">EST-RG001</span> として取込</div>
         </div>
         <div class="space-y-2 text-xs mb-3">
           <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="rule" checked class="accent-slate-700"> 商品コード＋色コード（推奨）</label>
@@ -1028,16 +1028,16 @@ function getIndexHTML() {
       <table class="w-full text-xs">
         <thead class="bg-gray-50"><tr>
           <th class="text-left px-4 py-2.5 text-gray-400 font-medium">ファイル名</th>
-          <th class="text-left px-4 py-2.5 text-gray-400 font-medium">紐付け商品</th>
+          <th class="text-left px-4 py-2.5 text-gray-400 font-medium">認識商品コード</th>
           <th class="text-left px-4 py-2.5 text-gray-400 font-medium">種別</th>
           <th class="text-left px-4 py-2.5 text-gray-400 font-medium">取込日時</th>
           <th class="text-left px-4 py-2.5 text-gray-400 font-medium">結果</th>
         </tr></thead>
         <tbody class="divide-y divide-gray-50">
-          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-RG001_WG_01.jpg</td><td class="px-4 py-2 text-blue-600">EST-RG001</td><td class="px-4 py-2 text-gray-500">本画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">紐付成功</span></td></tr>
-          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-NK002_PL_01.jpg</td><td class="px-4 py-2 text-blue-600">EST-NK002</td><td class="px-4 py-2 text-gray-500">本画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">紐付成功</span></td></tr>
-          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">IMG_20260601_1024.jpg</td><td class="px-4 py-2 text-red-400">—</td><td class="px-4 py-2 text-gray-500">—</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">未紐付け</span></td></tr>
-          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-EA003_YG_02.jpg</td><td class="px-4 py-2 text-blue-600">EST-EA003</td><td class="px-4 py-2 text-gray-500">着用画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">紐付成功</span></td></tr>
+          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-RG001_WG_01.jpg</td><td class="px-4 py-2 text-blue-600">EST-RG001</td><td class="px-4 py-2 text-gray-500">本画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">取込成功</span></td></tr>
+          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-NK002_PL_01.jpg</td><td class="px-4 py-2 text-blue-600">EST-NK002</td><td class="px-4 py-2 text-gray-500">本画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">取込成功</span></td></tr>
+          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">IMG_20260601_1024.jpg</td><td class="px-4 py-2 text-red-400">—</td><td class="px-4 py-2 text-gray-500">—</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full">認識不可</span></td></tr>
+          <tr class="hover:bg-gray-50"><td class="px-4 py-2 font-mono text-gray-600">EST-EA003_YG_02.jpg</td><td class="px-4 py-2 text-blue-600">EST-EA003</td><td class="px-4 py-2 text-gray-500">着用画像</td><td class="px-4 py-2 text-gray-400">06/02 08:01</td><td class="px-4 py-2"><span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full">取込成功</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1924,7 +1924,7 @@ function pimApp() {
       bg: ['bg-rose-50','bg-amber-50','bg-blue-50','bg-emerald-50','bg-purple-50'][i%5],
       ic: ['text-rose-200','text-amber-200','text-blue-200','text-emerald-200','text-purple-200'][i%5],
       isNew: i < 4,
-      linked: i % 7 !== 0,
+      linked: i % 7 !== 0,  // 後方互換で残すが表示には不使用
     }; }),
 
     priceItems: [
